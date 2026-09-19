@@ -1,0 +1,287 @@
+# Exercícios — Grafo de Fluxo de Controle
+
+## Teste de Software
+
+**Aluno:** __________________________________________  
+**RA:** _____________________________________________  
+**Curso:** __________________________________________  
+**Disciplina:** Teste de Software  
+**Data:** ____/____/________
+
+---
+
+# Exercício 1 — Classificação de pedido
+
+## 1. Blocos básicos
+
+| Nó | Bloco |
+|---|---|
+| 1 | Início + `desconto = 0` |
+| 2 | `valor >= 500` |
+| 3 | `desconto = 10` |
+| 4 | `clienteVip` |
+| 5 | `desconto += 5` |
+| 6 | `!pagamentoAprovado` |
+| 7 | `return "PAGAMENTO RECUSADO"` |
+| 8 | `valorFinal = valor - (valor * desconto / 100)` |
+| 9 | `return "PEDIDO APROVADO: " + valorFinal` |
+| 10 | Fim |
+
+## 2. Decisões e saídas
+
+| Decisão | Verdadeiro | Falso |
+|---|---|---|
+| `valor >= 500` | Nó 3 | Nó 4 |
+| `clienteVip` | Nó 5 | Nó 6 |
+| `!pagamentoAprovado` | Nó 7 | Nó 8 |
+
+## 3. Arestas
+
+```text
+1 → 2
+2 → 3
+2 → 4
+3 → 4
+4 → 5
+4 → 6
+5 → 6
+6 → 7
+6 → 8
+8 → 9
+7 → 10
+9 → 10
+```
+
+## 4. Início, fim e encerramento antecipado
+
+```text
+Início: Nó 1
+Fim: Nó 10
+
+Nó 7 → Nó 10
+```
+
+O nó 7 representa o `return` de pagamento recusado.
+
+## 5. Complexidade ciclomática
+
+```text
+N = 10
+E = 12
+
+V(G) = E - N + 2
+V(G) = 12 - 10 + 2
+V(G) = 4
+```
+
+Conferência:
+
+```text
+V(G) = número de decisões + 1
+V(G) = 3 + 1
+V(G) = 4
+```
+
+**Complexidade ciclomática: 4**
+
+## 6. Caminhos independentes
+
+### Caminho 1
+
+```text
+1 → 2(N) → 4(N) → 6(S) → 8 → 9 → 10
+```
+
+**Teste:**
+
+```text
+valor = 100
+clienteVip = false
+pagamentoAprovado = true
+```
+
+**Resultado:** `PEDIDO APROVADO: 100.0`
+
+### Caminho 2
+
+```text
+1 → 2(S) → 3 → 4(N) → 6(S) → 8 → 9 → 10
+```
+
+**Teste:**
+
+```text
+valor = 500
+clienteVip = false
+pagamentoAprovado = true
+```
+
+**Resultado:** `PEDIDO APROVADO: 450.0`
+
+### Caminho 3
+
+```text
+1 → 2(N) → 4(S) → 5 → 6(S) → 8 → 9 → 10
+```
+
+**Teste:**
+
+```text
+valor = 100
+clienteVip = true
+pagamentoAprovado = true
+```
+
+**Resultado:** `PEDIDO APROVADO: 95.0`
+
+### Caminho 4
+
+```text
+1 → 2(N) → 4(N) → 6(N) → 7 → 10
+```
+
+**Teste:**
+
+```text
+valor = 100
+clienteVip = false
+pagamentoAprovado = false
+```
+
+**Resultado:** `PAGAMENTO RECUSADO`
+
+---
+
+# Exercício 2 — Análise de leituras de temperatura
+
+## 1. Blocos básicos
+
+| Nó | Bloco |
+|---|---|
+| 1 | Início + `alertas = 0` + `i = 0` |
+| 2 | `i < temperaturas.length` |
+| 3 | `temperaturas[i] < 0` |
+| 4 | `alertas += 2` |
+| 5 | `temperaturas[i] > 35` |
+| 6 | `alertas++` |
+| 7 | `i++` |
+| 8 | `return alertas` |
+| 9 | Fim |
+
+## 2. Decisões e saídas
+
+| Decisão | Verdadeiro | Falso |
+|---|---|---|
+| `i < temperaturas.length` | Nó 3 | Nó 8 |
+| `temperaturas[i] < 0` | Nó 4 | Nó 5 |
+| `temperaturas[i] > 35` | Nó 6 | Nó 7 |
+
+## 3. Arestas
+
+```text
+1 → 2
+2 → 3
+2 → 8
+3 → 4
+3 → 5
+4 → 7
+5 → 6
+5 → 7
+6 → 7
+7 → 2
+8 → 9
+```
+
+## 4. Retorno do laço
+
+```text
+7 → 2
+```
+
+O nó 7 (`i++`) retorna para o nó 2, que verifica novamente a condição do `while`.
+
+## 5. Início e fim
+
+```text
+Início: Nó 1
+Fim: Nó 9
+```
+
+## 6. Complexidade ciclomática
+
+```text
+N = 9
+E = 11
+
+V(G) = E - N + 2
+V(G) = 11 - 9 + 2
+V(G) = 4
+```
+
+Conferência:
+
+```text
+V(G) = número de decisões + 1
+V(G) = 3 + 1
+V(G) = 4
+```
+
+**Complexidade ciclomática: 4**
+
+## 7. Caminhos independentes
+
+### Caminho 1 — vetor vazio
+
+```text
+1 → 2(N) → 8 → 9
+```
+
+**Teste:**
+
+```text
+temperaturas = {}
+```
+
+**Resultado:** `0`
+
+### Caminho 2 — temperatura negativa
+
+```text
+1 → 2(S) → 3(S) → 4 → 7 → 2(N) → 8 → 9
+```
+
+**Teste:**
+
+```text
+temperaturas = {-5}
+```
+
+**Resultado:** `2`
+
+### Caminho 3 — temperatura superior a 35
+
+```text
+1 → 2(S) → 3(N) → 5(S) → 6 → 7 → 2(N) → 8 → 9
+```
+
+**Teste:**
+
+```text
+temperaturas = {40}
+```
+
+**Resultado:** `1`
+
+### Caminho 4 — temperatura entre 0 e 35
+
+```text
+1 → 2(S) → 3(N) → 5(N) → 7 → 2(N) → 8 → 9
+```
+
+**Teste:**
+
+```text
+temperaturas = {20}
+```
+
+**Resultado:** `0`
